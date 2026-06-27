@@ -3,23 +3,12 @@ import numpy as np
 # pip install matplotlib
 import matplotlib.pyplot as plt
 
-
-
 try:
     print('Obtendo os dados...')
     ENDERECO_DADOS = 'https://www.ispdados.rj.gov.br/Arquivos/BaseDPEvolucaoMensalCisp.csv'
 
     # utf-8, iso-8859-1, latin1, cp1252
     df_ocorrencias = pd.read_csv(ENDERECO_DADOS, sep=';', encoding='iso-8859-1')
-
-
-    # Filtro por ano: 2025 e 2026
-    df_ocorrencias = df_ocorrencias[df_ocorrencias['ano'].isin([2025, 2026])]
-
-
-    # Por Região: Baixada Fluminense
-    df_ocorrencias = df_ocorrencias[df_ocorrencias['regiao'] == 'Interior']
-
 
     # delimitando as variáveis
     df_roubo_veiculo = df_ocorrencias[['munic', 'roubo_veiculo']]
@@ -361,15 +350,27 @@ try:
             ha='center'
         )
 
-
     plt.xticks(rotation=45, ha='right') # Rotaciona o texto do eixo X
     plt.title('Outliers Superiores')
 
     # POSIÇÃO 4 - HISTOGRAMA
     plt.subplot(2, 2, 4)
-    plt.hist(array_roubo_veiculo, bins=100)
-    plt.axvline(media_roubo_veiculo, color='green', linewidth=1)
-    plt.axvline(mediana_roubo_veiculo, color='orange', linewidth=1)
+    plt.hist(array_roubo_veiculo, bins=393)
+    plt.axvline(media_roubo_veiculo, color='green', linewidth=1, label='Média')
+    plt.axvline(mediana_roubo_veiculo, color='orange', linewidth=1, label='Mediana')
+    plt.legend() # legenda...
+
+    contagens, limites = np.histogram(array_roubo_veiculo, bins=393)
+    print('\nFaixas do Histograma')
+    for i in range(len(contagens)):
+
+        if contagens[i] > 0:
+            print(
+                f'Faixa {i+1} - '
+                f'{limites[i]:.0f} até {limites[i+1]:.0f} roubos'
+                f'=> {contagens[i]} Municípios'
+
+        )
 
 
     plt.tight_layout()  # Ajusta o layout
